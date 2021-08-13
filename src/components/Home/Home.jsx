@@ -1,7 +1,7 @@
 import React from 'react'
 import { Typography, TextField, Grid } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
+import Pricing from './Pricing';
 
 import useStyles from './Styles.js'
 const Home = () => {
@@ -39,7 +39,7 @@ const Home = () => {
             </div>
 
 
-
+<Pricing />
             
 
 
