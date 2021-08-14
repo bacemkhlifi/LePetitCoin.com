@@ -42,7 +42,7 @@ const Navbar = ( ) => {
                    
                      <Tab className={classes.tab} icon={<Search />} label="Rechercher"></Tab>
                      <Tab  className={classes.tab} icon={<Chat />} label="Messages"></Tab>
-                     <Tab className={classes.tab} icon={<AccountCircle />}  component={Link} to={localStorage.getItem("currentUser") === null? "/login" : "/account" }    label={(localStorage.getItem("typeUser") !=null)  ? `Profil` :`Se connecter`}></Tab>
+                     <Tab className={classes.tab} icon={<AccountCircle />}  component={Link} to={localStorage.getItem("currentUser") === null? "/login" : "/account" }    label={(localStorage.getItem("currentUser") !=null)  ? `Profil` :`Se connecter`}></Tab>
                      <Tab  className={classes.tab} icon={<ContactSupport />} label="Aide"></Tab>
                      <Tab  className={classes.tab} icon={<ExitToApp/>} className={(localStorage.getItem("currentUser") === null || btn==true)  ? `${classes.btnLogout}` :`${classes.bb}`} variant="outlined" onClick={handleLogout} label="Déconnexion"></Tab>
                      

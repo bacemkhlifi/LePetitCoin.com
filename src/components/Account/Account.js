@@ -106,7 +106,7 @@ class Account extends Component {
                                         <DateRange />   Date de naissance:  {user.datenaissance}
                                     </Typography>
                                     <Typography variant="body2" component="p">
-                                        <LocationOn /> Adresse: {user.addresse}
+                                        <LocationOn /> Adresse: {user.ville} , {user.region}
                                     </Typography>
                                     <Typography className={classes.pos} color="textSecondary">
                                         <Phone />   téléphone:  {user.telephone}

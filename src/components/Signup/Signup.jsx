@@ -46,7 +46,9 @@ class Signup extends Component {
     this.state = {
         firstName: '',
         lastName: '',
-        phoneNumber: '',
+       telephone: '',
+       ville:'',
+       region:'',
         cin:'',
         email: '',
         password: '',
@@ -80,8 +82,8 @@ handleOnCheck = e => this.setState({ [e.target.name]: e.target.value });
 handleSignUp = event => {
     event.preventDefault()
     this.setState({ loading: true });
-    const { firstName, lastName, phoneNumber,cin,sexe, email,addresse,date, password } = this.state;
-    if (!firstName.length || !lastName.length || !phoneNumber.length || !cin.length || !email.length || !password.length) {
+    const { nom, prenom, telephone,cin,sexe,ville,region, email,addresse,date, password } = this.state;
+    if (!nom.length || !prenom.length || !telephone.length || !cin.length || !email.length || !password.length) {
         this.setState({ error: "please fill out all the details", loading: false })
         return false;
     } else if (password.length < 6) {
@@ -89,11 +91,13 @@ handleSignUp = event => {
         return false;
     } else {
         const regesterData = {
-            nom: firstName,
-            prenom: lastName,
-            telephone : phoneNumber ,
+            nom: nom,
+            prenom: prenom,
+            telephone : telephone ,
             cin: cin,
             sexe: sexe,
+            ville:ville,
+            region:region,
             addresse: addresse,
             datenaissance:date,
             email:email,
@@ -110,12 +114,14 @@ handleSignUp = event => {
 
         this.setState({
             error: "",
-            firstName: "",
-            lastName: "",
-            phoneNumber: "",
+            nom: "",
+            prenom: "",
+            telephone: "",
             cin: '',
             sexe: '',
             email: "",
+            ville:"",
+            region:"",
             password: "",
             addresse:"",
             date:'',
@@ -124,7 +130,7 @@ handleSignUp = event => {
         });
         setTimeout(() => {
           
-                this.props.history.push("/account");
+                this.props.history.push("/login");
             
             this.setState({ loading: false })
         }, 2000)
@@ -133,7 +139,7 @@ handleSignUp = event => {
 
   render() {
     const { classes } = this.props;
-    const { firstName , lastName, phoneNumber,cin ,sexe, email,addresse,date, password, error, loading } = this.state;
+    const { nom  , prenom, telephone,cin ,sexe, email,addresse,ville,region,date, password, error, loading } = this.state;
 
   return (
     
@@ -151,15 +157,15 @@ handleSignUp = event => {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="nom"
                 variant="outlined"
                 required
                 fullWidth
                 id="firstName"
-                label="First Name"
+                label="Nom"
                 autoFocus
                 onChange={this.handleOnchange}
-                value={firstName}
+                value={nom}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -168,11 +174,11 @@ handleSignUp = event => {
                 required
                 fullWidth
                 id="lastName"
-                label="Last Name"
-                name="lastName"
+                label="Prénom"
+                name="prenom"
                 autoComplete="lname"
                 onChange={this.handleOnchange}
-                value={lastName}
+                value={prenom}
               />
             </Grid>
 
@@ -203,11 +209,11 @@ handleSignUp = event => {
                 required
                 fullWidth
                 id="phoneNumber"
-                label="phoneNumber"
-                name="phoneNumber"
+                label="Téléphone"
+                name="telephone"
                 autoComplete="phone"
                 onChange={this.handleOnchange}
-               value={phoneNumber}
+               value={telephone}
               />
             </Grid>
             <Grid item xs={12}>
@@ -216,11 +222,24 @@ handleSignUp = event => {
                 required
                 fullWidth
                 id="addresse"
-                label="Addresse"
-                name="addresse"
+                label="ville"
+                name="ville"
                 autoComplete="addresse"
                 onChange={this.handleOnchange}
-               value={addresse}
+               value={ville}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="Region"
+                label="Région"
+                name="region"
+                autoComplete="addresse"
+                onChange={this.handleOnchange}
+               value={region}
               />
             </Grid>
             

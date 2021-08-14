@@ -1,86 +1,167 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
+import React, { Component } from "react";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { Box, Typography, Button, ListItem, withStyles } from '@material-ui/core';
 
-const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
+import UploadService from "../Annonce/Services/upload-files.service";
 
-const useStyles = makeStyles((theme) => ({
-  listItem: {
-    padding: theme.spacing(1, 0),
+const BorderLinearProgress = withStyles((theme) => ({
+  root: {
+    height: 15,
+    borderRadius: 5,
   },
-  total: {
-    fontWeight: 700,
+  colorPrimary: {
+    backgroundColor: "#EEEEEE",
   },
-  title: {
-    marginTop: theme.spacing(2),
+  bar: {
+    borderRadius: 5,
+    backgroundColor: '#1a90ff',
   },
-}));
+}))(LinearProgress);
 
-export default function Review() {
-  const classes = useStyles();
+export default class UploadImages extends Component {
+  constructor(props) {
+    super(props);
+    this.selectFile = this.selectFile.bind(this);
+    this.upload = this.upload.bind(this);
 
-  return (
-    <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Order summary
-      </Typography>
-      <List disablePadding>
-        {products.map((product) => (
-          <ListItem className={classes.listItem} key={product.name}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
-          </ListItem>
-        ))}
-        <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" className={classes.total}>
-            $34.06
+    this.state = {
+      currentFile: undefined,
+      previewImage: undefined,
+      progress: 0,
+
+      message: "",
+      isError: false,
+      imageInfos: [],
+    };
+  }
+
+  /*componentDidMount() {
+    UploadService.getFiles().then((response) => {
+      this.setState({
+        imageInfos: response.data,
+      });
+    });
+  }*/
+
+  selectFile(event) {
+    this.setState({
+      currentFile: event.target.files[0],
+      previewImage: URL.createObjectURL(event.target.files[0]),
+      progress: 0,
+      message: ""
+    });
+  }
+
+  upload() {
+    this.setState({
+      progress: 0
+    });
+
+    UploadService.upload(this.state.currentFile, (event) => {
+      this.setState({
+        progress: Math.round((100 * event.loaded) / event.total),
+      });
+    })
+      .then((response) => {
+        this.setState({
+          message: response.data.message,
+          isError: false
+        });
+        return UploadService.getFiles();
+      })
+      .then((files) => {
+        this.setState({
+          imageInfos: files.data,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          progress: 0,
+          message: "Could not upload the image!",
+          currentFile: undefined,
+          isError: true
+        });
+      });
+  }
+
+  render() {
+    const {
+      currentFile,
+      previewImage,
+      progress,
+      message,
+      imageInfos,
+      isError
+    } = this.state;
+    
+    return (
+      <div className="mg20">
+        <label htmlFor="btn-upload">
+          <input
+            id="btn-upload"
+            name="btn-upload"
+            style={{ display: 'none' }}
+            type="file"
+            accept="image/*"
+            onChange={this.selectFile} />
+          <Button
+            className="btn-choose"
+            variant="outlined"
+            component="span" >
+             Choose Image
+          </Button>
+        </label>
+        <div className="file-name">
+        {currentFile ? currentFile.name : null}
+        </div>
+        <Button
+          className="btn-upload"
+          color="primary"
+          variant="contained"
+          component="span"
+          disabled={!currentFile}
+          onClick={this.upload}>
+          Upload
+        </Button>
+
+        {currentFile && (
+          <Box className="my20" display="flex" alignItems="center">
+            <Box width="100%" mr={1}>
+              <BorderLinearProgress variant="determinate" value={progress} />
+            </Box>
+            <Box minWidth={35}>
+              <Typography variant="body2" color="textSecondary">{`${progress}%`}</Typography>
+            </Box>
+          </Box>)
+        }
+
+        {previewImage && (
+          <div>
+            <img className="preview my20" src={previewImage} alt="" />
+          </div>
+        )}
+
+        {message && (
+          <Typography variant="subtitle2" className={`upload-message ${isError ? "error" : ""}`}>
+            {message}
           </Typography>
-        </ListItem>
-      </List>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
+        )}
+
+        <Typography variant="h6" className="list-header">
+          List of Images
           </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
-        </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
-          </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
+        <ul className="list-group">
+          {imageInfos &&
+            imageInfos.map((image, index) => (
+              <ListItem
+                divider
+                key={index}>
+                <img src={image.url} alt={image.name} height="80px" className="mr20" />
+                <a href={image.url}>{image.name}</a>
+              </ListItem>
             ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </React.Fragment>
-  );
+        </ul>
+      </div >
+    );
+  }
 }

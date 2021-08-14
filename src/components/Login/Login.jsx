@@ -78,7 +78,7 @@ handleSignUp = event => {
             } else {
                 const json = JSON.stringify(user);
                 localStorage.setItem("currentUser", json);
-                localStorage.setItem('typeUser', 'patient');
+                
                 this.props.history.push("/account");
                 window.sessionStorage.setItem("currentUser", json);
                 console.log(json)

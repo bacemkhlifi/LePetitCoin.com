@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,9 +10,11 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import AddressForm from './AddressForm';
-import PaymentForm from './PaymentForm';
+import AnnonceForm from './AnnonceForm';
+import ParamForm from './ParamForm';
 import Review from './Review';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -52,14 +54,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const steps = ['Shipping address', 'Payment details', 'Review your order'];
+const steps = ['Information générale', 'Paramétres', 'Images & Prix(DT)'];
 
 function getStepContent(step) {
+  
   switch (step) {
     case 0:
-      return <AddressForm />;
+      return <AnnonceForm   />;
     case 1:
-      return <PaymentForm />;
+      return <ParamForm />;
     case 2:
       return <Review />;
     default:
@@ -67,10 +70,11 @@ function getStepContent(step) {
   }
 }
 
-export default function Checkout() {
+export default function Annonce() {
   const classes = useStyles();
+  const history = useHistory()
   const [activeStep, setActiveStep] = React.useState(0);
-
+  
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -78,6 +82,21 @@ export default function Checkout() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+console.log(localStorage.getItem("annonce"))
+const createAd = ()=>{
+  const donnees= JSON.parse(localStorage.getItem("annonce"))
+  axios.post("http://localhost:8089/v1/add/ads/"+JSON.parse(localStorage.getItem("currentUser")).email+"/"+JSON.parse(localStorage.getItem("annonce")).subcat,
+   {
+     "name":donnees.name,
+     "ville":donnees.ville,
+     "region":donnees.region,
+     "description":donnees.description,
+
+   })
+   history.push("/")
+
+   
+}
 
   return (
     <React.Fragment>
@@ -86,7 +105,7 @@ export default function Checkout() {
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
             
-Ajouter une annonce
+          Ajouter une annonce 
           </Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>
             {steps.map((label) => (
@@ -99,12 +118,12 @@ Ajouter une annonce
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
+                 
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order confirmation, and will
-                  send you an update when your order has shipped.
+                 Confirmation
                 </Typography>
+              <Button onClick={createAd}> Publier </Button>
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -112,7 +131,7 @@ Ajouter une annonce
                 <div className={classes.buttons}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} className={classes.button}>
-                      Back
+                      Retour
                     </Button>
                   )}
                   <Button
@@ -121,7 +140,8 @@ Ajouter une annonce
                     onClick={handleNext}
                     className={classes.button}
                   >
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                   
+                    {activeStep === steps.length - 1 ? 'Suivant' : 'Suivant'}
                   </Button>
                 </div>
               </React.Fragment>
