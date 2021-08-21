@@ -91,9 +91,13 @@ const createAd = ()=>{
      "ville":donnees.ville,
      "region":donnees.region,
      "description":donnees.description,
+     "price":donnees.price,
+     "livraison":donnees.livraison,
 
    })
-   history.push("/")
+  setTimeout(() => {
+    history.push("/")
+  }, 2000); 
 
    
 }

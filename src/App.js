@@ -7,6 +7,7 @@ import Login from './components/Login/Login'
 import Account from './components/Account/Account'
 import Signup from './components/Signup/Signup'
 import Annonce from './components/Annonce/Annonce'
+import Product from './components/Home/Product'
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
                 <Route exact path='/account' component={Account} />
                 <Route exact path="/signup"component={Signup} />
                 <Route exact path="/ad"component={Annonce} />
+                <Route exact path="/anonnce" component={Product} />
             </Switch>
       <Footer />
    </Router>

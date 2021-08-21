@@ -8,34 +8,23 @@ import Checkbox from '@material-ui/core/Checkbox';
 
  
 export default function AnnonceForm() {
-  var obj ={
-   
-      name: '',
-      price: '',
-     ville: '',
-     region:'',
-    
-      
-     subcat:'',
-      cat: '',
-   
-    
-  }
+  const [category, setCategory] =useState('Multimédia');
+  const [subcategory, setSubcategory] =useState('Informatique');
+   const [categories, setCategories] = useState([])
    const [data, setData] = useState(
     {
       name: '',
   
      ville: 'Sfax',
      region:'',
-      subcat:'',
+      subcat:'Informatique',
       cat: 'Multimédia',
-   
+      
+
     
   }
    )
-    const [category, setCategory] =useState('Multimédia');
-    const [subcategory, setSubcategory] =useState('');
-     const [categories, setCategories] = useState([])
+   
      
 
      useEffect(async() => {
@@ -54,12 +43,12 @@ export default function AnnonceForm() {
     const handleChange = (e) => {
       setCategory(e.target.value)
       setData((Object.assign({}, data, {cat: e.target.value})))
-      obj.cat=category;
+      
     };
     const handleChange1 = (e) => {
       setSubcategory(e.target.value)
       setData((Object.assign({}, data, {subcat: e.target.value})))
-    }
+        }
     
     //console.log(data.id_subcat) 
 
@@ -84,18 +73,18 @@ const handleOnchangeAd = (e)=> { setData((Object.assign({}, data, {[e.target.nam
 const handleChange0 = (e) => {
 setVille(e.target.value)
 setData((Object.assign({}, data, {ville: e.target.value})))
-obj.ville=ville;
+
 };
 const handleChange01 = (e) => {
 setRegion(e.target.value)
 setData((Object.assign({}, data, {region: e.target.value})))
-obj.region=region;
+
 };
 
 const handleAds  = event => {
   event.preventDefault()
  
-  const { name, ville, cat,subcat ,region } = data;
+  const { name, ville, cat,subcat ,region, } = data;
    {
       const regesterData = {
         name: name,
@@ -104,11 +93,11 @@ const handleAds  = event => {
        region:region,
        subcat: subcat,
         cat: cat,
+       
      
         
           
       };
-      
       const json = JSON.stringify(data);
       console.log(localStorage.setItem("annonce", json));
 

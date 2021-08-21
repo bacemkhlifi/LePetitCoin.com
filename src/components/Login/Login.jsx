@@ -83,10 +83,6 @@ handleSignUp = event => {
                 window.sessionStorage.setItem("currentUser", json);
                 console.log(json)
                 window.location.reload();
-
-
-                
-
             }
         }) : this.setState({ error: "no user found" })
     }

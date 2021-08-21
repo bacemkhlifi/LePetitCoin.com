@@ -3,7 +3,7 @@ import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-import{ CardHeader,Grid,Button} from '@material-ui/core';
+import{ CardHeader,Grid} from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -17,7 +17,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useState } from 'react';
-import { Link,useHistory} from 'react-router-dom'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
@@ -51,15 +51,13 @@ export default function RecipeReviewCard() {
   //get ads
   const [ads, setads] = useState([])
   useEffect(async() => {
-      
-    await axios.get("http://localhost:8089/v1/annonces").then(
-        ((response)=>setads(response.data))
+    const userEmail = JSON.parse(localStorage.getItem("currentUser")).email;
+     
+    await axios.get("http://localhost:8089/v1/user/annonce/"+userEmail).then(
+        ((response)=>setads(response.data.annonces))
     )
   }, [ads])
 //console.log(ads)
-const [idAd, setidAd] = useState(0)
-   
-  
   return (
       <>
 
@@ -67,11 +65,11 @@ const [idAd, setidAd] = useState(0)
        
       {ads.map((ad)=>(   
       <Grid item lg={4}> 
-    <Card className={classes.root} key={ad.id_ad}>
+    <Card className={classes.root}>
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            
+            R
           </Avatar>
         }
         action={
@@ -90,9 +88,7 @@ const [idAd, setidAd] = useState(0)
       <CardContent>
         <Typography variant="h6" color="textSecondary" component="p">
          {ad.name}
-       
-       <br></br>
-       prix : {ad.price} DT
+        
           </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -112,13 +108,6 @@ const [idAd, setidAd] = useState(0)
         >
           <ExpandMoreIcon />
         </IconButton>
-        <Button onClick={()=>{ localStorage.setItem("id", JSON.stringify(ad.id_ad))
-       // console.log(localStorage.getItem("id"))
-    }
-        }
-        component={Link} to={"/anonnce"}
-            
-              >Voir plus </Button>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
@@ -128,7 +117,7 @@ const [idAd, setidAd] = useState(0)
           <Typography paragraph>
            {ad.description}
           </Typography>
-          Livraison:   {ad.livraison}
+         
         </CardContent>
       </Collapse>
     </Card>

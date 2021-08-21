@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import { Typography, Container, Grid, Button, CardContent, Card, CardActions, Paper, Table, TableCell, TableBody, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import { ThumbUp, Notifications, Drafts, AccountBox, LocationOn, DateRange, Phone, LocalHospital, PictureAsPdf } from '@material-ui/icons'
-
+import axios from 'axios';
+import ProductsUser from './ProductsUser'
 const styles = theme => ({
     Rtitle: {
         fontSize: "32px",
@@ -34,10 +35,23 @@ class Account extends Component {
         user: "",
         annonces: [],
         error: ""
+        ,dataUserLength:""
     }
 
-    componentDidMount() {
 
+
+
+ 
+   
+   
+  
+async componentDidMount() {
+    const userEmail = JSON.parse(localStorage.getItem("currentUser")).email;
+      
+    const response  = await  axios.get('http://localhost:8089/v1/user/annonce/'+userEmail)
+       const  dataUserLength = await  response.data.annonces.length ;
+        console.log(dataUserLength)
+        this.setState({dataUserLength:dataUserLength})
         const user = JSON.parse(localStorage.getItem("currentUser"));
         if (user) {
 
@@ -50,9 +64,9 @@ class Account extends Component {
         console.log(user)
     }
     render() {
-
+       // console.log(this.state.annoncesData)
         const { classes } = this.props;
-        const { user, annonces, error } = this.state
+        const { user, dataUserLength, error } = this.state
         return (
             <>
 
@@ -113,7 +127,7 @@ class Account extends Component {
                                     </Typography>
 
                                     <Typography className={classes.pos} color="textSecondary">
-                                        <LocalHospital />   Numbre des annonces publiées: {annonces.length}
+                                        <LocalHospital />   Numbre des annonces publiées: {dataUserLength}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
@@ -127,8 +141,8 @@ class Account extends Component {
                             </TableContainer>
                         </Grid>
                     </Grid>
-                    <Typography variant="h6" className={classes.Rtitle}>Annonces({annonces.length})</Typography>
-
+                    <Typography variant="h6" className={classes.Rtitle}>Mes Annonces({dataUserLength})</Typography>
+<ProductsUser />
                 </Container>
             </>
 
