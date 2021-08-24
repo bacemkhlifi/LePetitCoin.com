@@ -52,9 +52,18 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
   },
+  hide:{
+    display:"none"
+  },
+  show:{
+    width: "19%",
+    height:"6%",
+    marginTop:"25px"
+    
+  }
 }));
 
-const steps = ['Information générale', 'Paramétres', 'Images & Prix(DT)'];
+const steps = ['Information générale', 'Paramétres', 'Images '];
 
 function getStepContent(step) {
   
@@ -83,24 +92,6 @@ export default function Annonce() {
     setActiveStep(activeStep - 1);
   };
 console.log(localStorage.getItem("annonce"))
-const createAd = ()=>{
-  const donnees= JSON.parse(localStorage.getItem("annonce"))
-  axios.post("http://localhost:8089/v1/add/ads/"+JSON.parse(localStorage.getItem("currentUser")).email+"/"+JSON.parse(localStorage.getItem("annonce")).subcat,
-   {
-     "name":donnees.name,
-     "ville":donnees.ville,
-     "region":donnees.region,
-     "description":donnees.description,
-     "price":donnees.price,
-     "livraison":donnees.livraison,
-
-   })
-  setTimeout(() => {
-    history.push("/")
-  }, 2000); 
-
-   
-}
 
   return (
     <React.Fragment>
@@ -124,11 +115,8 @@ const createAd = ()=>{
                 <Typography variant="h5" gutterBottom>
                  
                 </Typography>
-                <Typography variant="subtitle1">
-                 Confirmation
-                </Typography>
-              <Button onClick={createAd}> Publier </Button>
-              </React.Fragment>
+             
+                   </React.Fragment>
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
@@ -143,9 +131,19 @@ const createAd = ()=>{
                     color="primary"
                     onClick={handleNext}
                     className={classes.button}
+                    style={{
+                      "backgroundColor": "#5d9a44",
+                    "&:active": {
+                      "backgroundColor": "#5d9a44",
+                    },
+                     "color":"white",
+                      
+                    }}
+                    className={(activeStep === 2) ? `${classes.hide}`: `${classes.show}` } 
                   >
                    
-                    {activeStep === steps.length - 1 ? 'Suivant' : 'Suivant'}
+                    {activeStep === steps.length - 1 ? "Suivant" : 'Suivant'}
+                   
                   </Button>
                 </div>
               </React.Fragment>

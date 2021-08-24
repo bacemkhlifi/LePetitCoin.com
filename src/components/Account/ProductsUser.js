@@ -16,6 +16,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
 import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
@@ -48,6 +50,7 @@ export default function RecipeReviewCard() {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  
   //get ads
   const [ads, setads] = useState([])
   useEffect(async() => {
@@ -92,9 +95,7 @@ export default function RecipeReviewCard() {
           </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
+       
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>
@@ -108,6 +109,16 @@ export default function RecipeReviewCard() {
         >
           <ExpandMoreIcon />
         </IconButton>
+        <IconButton>
+          <CreateIcon />
+        </IconButton>
+        <IconButton
+         
+         onClick={()=>{axios.post("http://localhost:8089/v1/annonce/delete/"+ad.id_ad)
+         window.location.reload()}}>
+          <DeleteIcon style={{color:"red"}} />
+          </IconButton>
+        
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

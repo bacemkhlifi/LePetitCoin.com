@@ -106,9 +106,7 @@ const handleChangeLivraison = (e) => {
          
         </TextField>
       </Grid>
-     
 
-   
       </Grid>
     </>
   );

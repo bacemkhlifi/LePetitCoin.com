@@ -5,7 +5,8 @@ const Footer = () => {
     const classes = useStyles()
     return (
         <>
-            <Box 
+        <div id="aide">
+            <Box  
             px={{xs:3 , sm :10}}  py={{xs:5 , sm :10}}
             
             marginTop={4} bgcolor="text.secondary" color="white">
@@ -35,6 +36,7 @@ const Footer = () => {
 
 
             </Box>
+            </div>
         </>
     )
 }

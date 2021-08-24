@@ -1,32 +1,31 @@
 import React, { Component } from "react";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Box, Typography, Button, ListItem, withStyles } from '@material-ui/core';
+import { Box, Typography, Button, ListItem, withStyles,CardMedia,CardActionArea,Card } from '@material-ui/core';
 import axios from 'axios'
-import UploadService from "../Annonce/Services/upload-files.service";
+import {withRouter} from 'react-router-dom';
 
-export default class UploadImages extends Component {
+
+
+ class UploadImages extends Component {
   state={
     selectedFile: null
   }
+  state= {
+    imagePreview:null
+  } 
   fileSelectorHandler= event =>{
     this.setState ({
       selectedFile : event.target.files[0]
     })
+    this.setState({
+      imagePreview:(URL.createObjectURL(event.target.files[0]))
+    })
   }
+  
 
-  uploadFileHandler =()=>{
-const fd = new FormData;
-fd.append("file",this.state.selectedFile)
-//axios.post("http://localhost:8089/v1/upload",fd).then(res =>{console.log(res)})
-console.log(fd)
-const annoncePerfectLast = JSON.parse(localStorage.getItem("annonce"))
-annoncePerfectLast.PhotoData=fd
-console.log(annoncePerfectLast)
- 
-  } 
 
  
-createAd = ()=>{
+createAd = () =>{
   const fd = new FormData;
 fd.append("file",this.state.selectedFile)
 const annoncePerfectLast = JSON.parse(localStorage.getItem("annonce"))
@@ -46,7 +45,14 @@ fd1.append("ads",{
   +annoncePerfectLast.subcat+"/"+annoncePerfectLast.name+"/"+annoncePerfectLast.price+"/"
   +annoncePerfectLast.ville+"/"+annoncePerfectLast.region+"/"+annoncePerfectLast.description+"/"
   +annoncePerfectLast.livraison,
-fd )
+fd );
+
+
+
+  this.props.history.push("/");
+
+
+
  
  
 
@@ -56,11 +62,36 @@ fd )
    // console.log(localStorage.getItem("annonce"))
     return (
     <>
+     <Card>
+                        <CardActionArea>
+                            <CardMedia  style={{
+                              height:"100%",
+                              width:"100%"
+                            }}
+                                component="img"
+                                image={
+                                    this.state.imagePreview !== null ?
+                                        this.state.imagePreview :
+                                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFKwpAYLdgVvhphi1bbppMkQhSmYHBJ2OtpRAVqVuocx5qoXzuHcNjGWHjXBRGJR9uoHM&usqp=CAU"}
+                            />
+                        </CardActionArea>
+                    </Card>
         <input type="file" onChange={this.fileSelectorHandler} ></input>
-        <Button onClick={this.uploadFileHandler}> Upload</Button>
+       
         <br></br>
-        <Button onClick={this.createAd}> Publier </Button>
+        <Button onClick={this.createAd} variant="contined"
+        style={{
+          "backgroundColor": "#5d9a44",
+        "&:active": {
+          "backgroundColor": "#5d9a44",
+        },
+         "color":"white",
+         marginTop:"35px",
+         paddingInline:"45px"
+          
+        }}> Publier </Button>
       </>
     );
   }
 }
+export default withRouter (UploadImages)

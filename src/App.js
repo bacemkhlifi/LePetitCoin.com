@@ -8,18 +8,22 @@ import Account from './components/Account/Account'
 import Signup from './components/Signup/Signup'
 import Annonce from './components/Annonce/Annonce'
 import Product from './components/Home/Product'
+import Messages from './components/Messages/messages'
 function App() {
   return (
     <>
     <Router>
       <Navbar></Navbar> 
             <Switch>
-                <Route exact path="/"component={Home} />
+                <Route exact path="/home"  component={Home}  />
+                <Route exact path="/"  component={Home}  />
                 <Route exact path="/login"component={Login} />
                 <Route exact path='/account' component={Account} />
                 <Route exact path="/signup"component={Signup} />
                 <Route exact path="/ad"component={Annonce} />
                 <Route exact path="/anonnce" component={Product} />
+                <Route exact path="/chat"component={Messages}  />
+
             </Switch>
       <Footer />
    </Router>
