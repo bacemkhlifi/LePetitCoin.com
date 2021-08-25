@@ -116,7 +116,7 @@ const [idAd, setidAd] = useState(0)
        // console.log(localStorage.getItem("id"))
     }
         }
-        component={Link} to={"/anonnce"}
+        component={Link} to={"/anonnce/:id"}
             
               >Voir plus </Button>
       </CardActions>

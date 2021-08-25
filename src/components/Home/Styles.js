@@ -5,10 +5,14 @@ export default   makeStyles((theme) => ({
     maxWidth: 345,
   },
   hide:{
-    display:"none"
+    display:"none",
+    order: "2",
+   webkitOrder: "2"
+    
   },
   show:{
-
+    position:"relative",
+   
   },
   media: {
     height: 0,

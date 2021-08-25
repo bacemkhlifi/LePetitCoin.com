@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Grid, Typography,Button ,CardHeader} from '@material-ui/core'
 import { Room, Category,AccountCircle} from '@material-ui/icons'
+import {useParams} from 'react-router-dom' 
 import axios from 'axios'
 export default function Product() {
     const [ad, setad] = useState([])
-      
+      const params = useParams()
+      console.log(params)
     useEffect( () => {
 
-         axios.get("http://localhost:8089/v1/annonce/"+localStorage.getItem("id")).then(
+         axios.get("http://localhost:8089/v1/annonce/"+params.id).then(
             ((response) => setad(response.data))
         
         ) 

@@ -21,7 +21,7 @@ function App() {
                 <Route exact path='/account' component={Account} />
                 <Route exact path="/signup"component={Signup} />
                 <Route exact path="/ad"component={Annonce} />
-                <Route exact path="/anonnce" component={Product} />
+                <Route exact path="/annonce/:id" component={Product} />
                 <Route exact path="/chat"component={Messages}  />
 
             </Switch>

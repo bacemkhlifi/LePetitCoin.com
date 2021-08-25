@@ -15,6 +15,7 @@ import Products from './Products'
 import axios from 'axios'
 import useStyles from './Styles.js'
 const Home = () => {
+ 
     const classes = useStyles()
     const [ads, setads] = useState([])
     const [categories, setcategories] = useState([])
@@ -62,7 +63,9 @@ const Home = () => {
     const handleChangeSouscateg =(event) =>{
         setsouscateg(event.target.value);
     }
-console.log(JSON.parse((localStorage.getItem("villeSearch"))))
+//console.log(JSON.parse((localStorage.getItem("villeSearch"))))
+
+ 
     return (
         <>
 
@@ -206,9 +209,7 @@ console.log(JSON.parse((localStorage.getItem("villeSearch"))))
         })}
         </Select>  
       </FormControl>
-    
-
-                            </Grid>
+                              </Grid>
 
                             
 
@@ -218,13 +219,17 @@ console.log(JSON.parse((localStorage.getItem("villeSearch"))))
                     <Grid item lg={9}>
                     <Grid container spacing={3}>
        
-       {ads.map((ad)=>(   
-       <Grid item lg={4}> 
-       <div className={(JSON.parse(localStorage.getItem("villeSearch")) !="Tout la Tunisie" && JSON.parse(localStorage.getItem("villeSearch")) !=ad.ville)?   `${classes.hide}`:`${classes.show}`}>
-       <div className={(JSON.parse(localStorage.getItem("regionSearch")) !="" && JSON.parse(localStorage.getItem("regionSearch")) !=ad.region)?   `${classes.hide}`:`${classes.show}`}>
-       <div className={(JSON.parse(localStorage.getItem("souCategSearch")) !="" && JSON.parse(localStorage.getItem("souCategSearch")) !=ad.subCategory)?   `${classes.hide}`:`${classes.show}`}>
- 
-     <Card className={classes.root} key={ad.id_ad}      >
+       {ads.map((ad)=>{
+        if((JSON.parse(localStorage.getItem("villeSearch")) =="Tout la Tunisie" || JSON.parse(localStorage.getItem("villeSearch")) ==ad.ville)
+        && (JSON.parse(localStorage.getItem("regionSearch")) =="" || JSON.parse(localStorage.getItem("regionSearch")) ==ad.region)
+      && (JSON.parse(localStorage.getItem("souCategSearch")) ==""|| JSON.parse(localStorage.getItem("souCategSearch")) ==ad.subCategory)
+        )
+    {
+ return  (
+       
+       <Grid item lg={4}  id="card"> 
+  
+     <Card className={classes.root} key={ad.id_ad} >
        <CardHeader
          avatar={
            <Avatar aria-label="recipe" className={classes.avatar}>
@@ -256,7 +261,14 @@ console.log(JSON.parse((localStorage.getItem("villeSearch"))))
          <IconButton aria-label="add to favorites">
            <FavoriteIcon />
          </IconButton>
-         <IconButton aria-label="share">
+         <IconButton aria-label="share"
+         onClick={() =>{  navigator.clipboard.writeText('http://localhost:3000/annonce/'+ad.id_ad)
+         
+         alert('Lien copié dans le presse-papiers') }
+        }
+
+         
+         >
            <ShareIcon />
          </IconButton>
          <IconButton
@@ -269,11 +281,8 @@ console.log(JSON.parse((localStorage.getItem("villeSearch"))))
          >
            <ExpandMoreIcon />
          </IconButton>
-         <Button onClick={()=>{ localStorage.setItem("id", JSON.stringify(ad.id_ad))
-        // console.log(localStorage.getItem("id"))
-     }
-         }
-         component={Link} to={"/anonnce"}
+         <Button 
+         component={Link} to={"/annonce/"+ad.id_ad}
              
                >Voir plus </Button>
        </CardActions>
@@ -289,9 +298,9 @@ console.log(JSON.parse((localStorage.getItem("villeSearch"))))
          </CardContent>
        </Collapse>
      </Card>
-     </div></div></div>
+    
      </Grid>
-     ))}
+) }})}
      </Grid>
 
                   
