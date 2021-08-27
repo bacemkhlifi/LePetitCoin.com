@@ -3,7 +3,7 @@ import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-import{ CardHeader,Grid} from '@material-ui/core';
+import{ CardHeader,Grid,Button,TextField} from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -12,15 +12,39 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import { useState } from 'react';
+import Modal from '@material-ui/core/Modal';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
 
 const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
   root: {
     maxWidth: 345,
   },
@@ -45,6 +69,73 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RecipeReviewCard() {
   const classes = useStyles();
+  //startModal
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  const handleOnchangeAd = (e)=> { setUpdateAd((Object.assign({}, UpdateAd, {[e.target.name]: e.target.value})))}
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+ 
+  
+  const [UpdateAd, setUpdateAd] = useState({
+    name:"",
+    description:"",
+    price:""
+  })
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <h2 id="simple-modal-title"> Modifier l'annonce </h2>
+      <p id="simple-modal-description"> </p>
+
+      <TextField
+            required
+            id="titre"
+            name="name"
+            label="Titre de votre annonce"
+            fullWidth
+            autoComplete="given-name"
+            onChange={handleOnchangeAd}
+          />
+          <TextField
+            required
+            id="description"
+            name="description"
+            label="Description"
+            fullWidth
+            autoComplete="given-name"
+            onChange={handleOnchangeAd}
+          />
+           <TextField
+            required
+            id="price"
+            name="price"
+            label="Prix"
+            fullWidth
+            autoComplete="given-name"
+            onChange={handleOnchangeAd}
+          />
+     <Button variant="outlined" onClick={()=>{
+       axios.put("http://localhost:8089/v1/annonce/update/"+(JSON.parse(localStorage.getItem("IdAdUpdate"))),
+       {
+         "name":UpdateAd.name,
+         "description":UpdateAd.description,
+         "price":UpdateAd.price
+       }
+       )
+       setOpen(false)
+      
+       
+       }}>Modifier</Button>
+    </div>
+  );
+///endModal
+
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -91,12 +182,19 @@ export default function RecipeReviewCard() {
       <CardContent>
         <Typography variant="h6" color="textSecondary" component="p">
          {ad.name}
-        
+         <br />
+        Prix : {ad.price} DT
           </Typography>
       </CardContent>
       <CardActions disableSpacing>
        
-        <IconButton aria-label="share">
+        <IconButton aria-label="share"
+         onClick={() =>{  navigator.clipboard.writeText('http://localhost:3000/annonce/'+ad.id_ad)
+         
+         alert('Lien copié dans le presse-papiers') }
+        }
+
+        >
           <ShareIcon />
         </IconButton>
         <IconButton
@@ -109,7 +207,13 @@ export default function RecipeReviewCard() {
         >
           <ExpandMoreIcon />
         </IconButton>
-        <IconButton>
+        <IconButton
+        onClick={()=>{
+          setOpen(true);
+          const json = JSON.stringify(ad.id_ad);
+          localStorage.setItem("IdAdUpdate",json)
+        }}
+        >
           <CreateIcon />
         </IconButton>
         <IconButton
@@ -135,7 +239,14 @@ export default function RecipeReviewCard() {
     </Grid>
     ))}
     </Grid>
-      
+    <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal> 
     </>
   );
 }

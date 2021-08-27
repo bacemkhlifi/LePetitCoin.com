@@ -1,10 +1,37 @@
-import React, { Component } from 'react'
+import React, { useState,useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles';
-import { Typography, Container, Grid, Button, CardContent, Card, CardActions, Paper, Table, TableCell, TableBody, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { Typography,TextField, Container, Grid, Button, CardContent, Card, CardActions, Paper, Table, TableCell, TableBody, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import { ThumbUp, Notifications, Drafts, AccountBox, LocationOn, DateRange, Phone, LocalHospital, PictureAsPdf } from '@material-ui/icons'
 import axios from 'axios';
 import ProductsUser from './ProductsUser'
-const styles = theme => ({
+
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        position: 'absolute',
+        width: 400,
+        backgroundColor: theme.palette.background.paper,
+        border: '2px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+      },
     Rtitle: {
         fontSize: "32px",
         textAlign: "center",
@@ -27,46 +54,100 @@ const styles = theme => ({
         backgroundColor: "#00927b2e"
     }
 
+}))
+export default function  Account()  {
+
+const classes = useStyles();
+
+//startModal
+const [modalStyle] = React.useState(getModalStyle);
+const [open, setOpen] = React.useState(false);
+const handleOnchangeAd = (e)=> { setUpdateAd((Object.assign({}, UpdateAd, {[e.target.name]: e.target.value})))}
+
+const handleOpen = () => {
+  setOpen(true);
+};
+
+const handleClose = () => {
+  setOpen(false);
+};
+
+
+const [UpdateAd, setUpdateAd] = useState({
+  name:"",
+  description:"",
+  price:""
 })
-class Account extends Component {
+const body = (
+  <div style={modalStyle} className={classes.paper}>
+    <h2 id="simple-modal-title"> Modifier Mes informations  </h2>
+    <p id="simple-modal-description"> </p>
 
-
-    state = {
-        user: "",
-        annonces: [],
-        error: ""
-        ,dataUserLength:""
-    }
-
-
-
-
- 
+    <TextField
+          required
+          id="nom"
+          name="nom"
+          label="Nom"
+          fullWidth
+          autoComplete="given-name"
+          onChange={handleOnchangeAd}
+        />
+        <TextField
+          required
+          id="Prénom"
+          name="prenom"
+          label="Prénom"
+          fullWidth
+          autoComplete="given-name"
+          onChange={handleOnchangeAd}
+        />
+         <TextField
+          required
+          id="phone"
+          name="telephone"
+          label="Téléphone"
+          fullWidth
+          autoComplete="given-name"
+          onChange={handleOnchangeAd}
+        />
+   <Button variant="outlined" onClick={()=>{
+       const userEmail = JSON.parse(localStorage.getItem("currentUser")).email;
+     axios.put("http://localhost:8089/v1/user/update/"+userEmail,
+     {
+       "nom":UpdateAd.nom,
+       "prenom":UpdateAd.prenom,
+       "telephone":UpdateAd.telephone
+     }
+     )
+     setOpen(false)}}>Modifier</Button>
+  </div>
+);
+///endModal
+  const [state,setState]  = useState({
+    fullName: "bacem null",
+    telephone: "22780333",
+    sexe: "",
+    date_insc: "",
+    datenaissance: "",
    
+    ville: "",
+    region: "",
+    email: "",
+    
    
-  
-async componentDidMount() {
+    annonces: [],
+   
+    })
+
+useEffect( () => {
     const userEmail = JSON.parse(localStorage.getItem("currentUser")).email;
       
-    const response  = await  axios.get('http://localhost:8089/v1/user/annonce/'+userEmail)
-       const  dataUserLength = await  response.data.annonces.length ;
-        console.log(dataUserLength)
-        this.setState({dataUserLength:dataUserLength})
-        const user = JSON.parse(localStorage.getItem("currentUser"));
-        if (user) {
-
-            this.setState({ annonces: user.annonces })
-            this.setState({ user: user })
-        }
-        else {
-            this.setState({ error: "You don't have permission to be in this page" })
-        }
-        console.log(user)
-    }
-    render() {
-       // console.log(this.state.annoncesData)
-        const { classes } = this.props;
-        const { user, dataUserLength, error } = this.state
+      axios.get('http://localhost:8089/v1/user/annonce/'+userEmail).then((res)=>(
+        setState(res.data)
+    ))
+}, [state])
+    
+    
         return (
             <>
 
@@ -114,24 +195,33 @@ async componentDidMount() {
 
                                     </Typography>
                                     <Typography variant="h6" component="h2">
-                                        <AccountBox />  (Mr/Mme): {user.fullName}
+                                        <AccountBox />  (Mr/Mme): {state.fullName}
                                     </Typography>
                                     <Typography className={classes.pos} color="textSecondary">
-                                        <DateRange />   Date de naissance:  {user.datenaissance}
+                                        <DateRange />   Date de naissance:  {state.datenaissance}
                                     </Typography>
                                     <Typography variant="body2" component="p">
-                                        <LocationOn /> Adresse: {user.ville} , {user.region}
+                                        <LocationOn /> Adresse: {state.ville} , {state.region}
                                     </Typography>
                                     <Typography className={classes.pos} color="textSecondary">
-                                        <Phone />   téléphone:  {user.telephone}
+                                        <Phone />   téléphone:  {state.telephone}
                                     </Typography>
 
                                     <Typography className={classes.pos} color="textSecondary">
-                                        <LocalHospital />   Numbre des annonces publiées: {dataUserLength}
+                                        <LocalHospital />   Numbre des annonces publiées: {state.annonces.length}
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button variant="contained" color="primary">Modifier mes informations</Button>
+                                    <Button variant="contained" 
+                                    style={{
+                                        "backgroundColor": "#5d9a44",
+                                        "&:active": {
+                                          "backgroundColor": "#5d9a44",
+                                        },
+                                         "color":"white",
+                                    }}
+                                    onClick={()=> {setOpen(true)}}
+                                    >Modifier mes informations</Button>
                                 </CardActions>
                             </Card>
                         </Grid>
@@ -141,12 +231,19 @@ async componentDidMount() {
                             </TableContainer>
                         </Grid>
                     </Grid>
-                    <Typography variant="h6" className={classes.Rtitle}>Mes Annonces({dataUserLength})</Typography>
-<ProductsUser />
+                    <Typography variant="h6" className={classes.Rtitle}>Mes Annonces({state.annonces.length})</Typography>
+                        <ProductsUser />
                 </Container>
+                <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal> 
             </>
 
         )
-    }
-}
-export default withStyles(styles)(Account);
+    
+                                }

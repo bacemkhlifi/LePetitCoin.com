@@ -278,7 +278,7 @@ handleSignUp = event => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email "
                 name="email"
                 autoComplete="email"
                 onChange={this.handleOnchange}

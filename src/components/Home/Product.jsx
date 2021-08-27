@@ -6,7 +6,7 @@ import axios from 'axios'
 export default function Product() {
     const [ad, setad] = useState([])
       const params = useParams()
-      console.log(params)
+     // console.log(params)
     useEffect( () => {
 
          axios.get("http://localhost:8089/v1/annonce/"+params.id).then(
