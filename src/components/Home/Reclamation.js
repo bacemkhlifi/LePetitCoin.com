@@ -46,7 +46,8 @@ function Reclamation() {
         <>
             <Container>
                 <Grid Container>
-                    <Grid item lg={6}>
+                    <Grid item style={{"textAlign":"center",
+                "padding":"70px 350px"}}>
 
                     <Typography variant="h6" gutterBottom>
       Réclamation

@@ -1,9 +1,64 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Grid, Typography,Button ,CardHeader} from '@material-ui/core'
+import { Container, Grid, Typography,Button ,TextField} from '@material-ui/core'
 import { Room, Category,AccountCircle} from '@material-ui/icons'
 import {useParams} from 'react-router-dom' 
+import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
+import { red } from '@material-ui/core/colors';
+import Modal from '@material-ui/core/Modal';
+
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  root: {
+    maxWidth: 345,
+  },
+  media: {
+    height: 0,
+    paddingTop: '56.25%', // 16:9
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  avatar: {
+    backgroundColor: red[500],
+  },
+}));
+
+
+  
 export default function Product() {
+const classes = useStyles();
+
     const [ad, setad] = useState([])
       const params = useParams()
      // console.log(params)
@@ -22,13 +77,65 @@ export default function Product() {
     const [phone, setphone] = useState({
         phone:""
     })
+    const [email,setemail]= useState({
+        email:""
+    })
     const getData=()=>{
         setname((Object.assign({}, name, {name:(ad.user)[1] })));
         setphone((Object.assign({}, phone, {phone: "Numéro:" + (ad.user)[2] })))
- 
+        setemail((Object.assign({}, email, {email:  (ad.user)[0] })))
     }
     
  //console.log(ad)
+ const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+//startModal
+const [modalStyle] = React.useState(getModalStyle);
+const [open, setOpen] = React.useState(false);
+const handleOnchangeAd = (e)=> { setUpdateAd((Object.assign({}, UpdateAd, {[e.target.name]: e.target.value})))}
+
+
+
+
+const [UpdateAd, setUpdateAd] = useState({
+ message:""
+})
+const body = (
+  <div style={modalStyle} className={classes.paper}>
+    <h2 id="simple-modal-title"> Envoyer un message  </h2>
+    <p id="simple-modal-description"> </p>
+
+    <TextField
+          required
+          id="nom"
+          name="message"
+          label="Ecrivez ici"
+          fullWidth
+          autoComplete="given-name"
+          onChange={handleOnchangeAd}
+        />
+       
+   <Button variant="outlined" onClick={()=>{
+       const userEmail = JSON.parse(localStorage.getItem("currentUser")).email;
+     axios.post("http://localhost:8089/v1/send/"+userEmail+"/"+email.email,
+     {
+       "message":UpdateAd.message,
+     
+     }
+     )
+     setOpen(false)}}>envoyer</Button>
+  </div>
+);
+///endModal
+  
+
+
+    /////////
     return (
         <>
             <Container style={{ "marginTop": "150px" }}>
@@ -39,6 +146,10 @@ export default function Product() {
                            height:"350px",
                            width:"750px"
                        }} src={process.env.PUBLIC_URL+"/fileAds/"+ad.photo} />
+                       <br />
+                       <Typography variant="subtitle2"> Description :  </Typography>
+                       <br />
+                       {ad.description} 
                     </Grid>
                     <Grid item lg={4} >
                     <Typography style={{    
@@ -103,11 +214,21 @@ export default function Product() {
         },
          "color":"white",
           "paddingInline": "120px",
-      }} >Discuter</Button>
+      }}
+      disabled={(localStorage.getItem("currentUser")==null)? true : false}
+      onClick={()=>{getData()
+      setOpen(true)}} >Discuter</Button>
                         </Grid>
                 </Grid>
             </Container>
-
+            <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal> 
         </>
     )
 }

@@ -63,18 +63,18 @@ const useStyles = makeStyles((theme) => ({
 
 const tiers = [
   {
-    title: 'Free',
+    title: 'Gratuit',
     price: '0',
     description: [
      'Annonces illimitée',
      "Accès au centre d'aide",
      'Assistance par e-mail'],
-    buttonText: 'Sign up for free',
+    buttonText: 'Inscription gratuite',
     buttonVariant: 'outlined',
   },
   {
     title: 'Pro',
-    subheader: 'Most popular',
+    subheader: 'Le plus populaire',
     price: '15',
     description: [
       
@@ -83,7 +83,7 @@ const tiers = [
       "Accès au centre d'aide",
       'Assistance prioritaire par e-mail',
     ],
-    buttonText: 'Get started',
+    buttonText: 'Commencer',
     buttonVariant: 'contained',
   },
   {
@@ -96,7 +96,7 @@ const tiers = [
       "Accès au centre d'aide",
       'Assistance téléphonique et e-mail',
     ],
-    buttonText: 'Contact us',
+    buttonText: 'Nous contacter',
     buttonVariant: 'outlined',
   },
 ];
@@ -150,7 +150,7 @@ export default function Pricing() {
                 <CardContent>
                   <div className={classes.cardPricing}>
                     <Typography component="h2" variant="h3" color="textPrimary">
-                      ${tier.price}
+                      DT{tier.price}
                     </Typography>
                     <Typography variant="h6" color="textSecondary">
                       /mo
